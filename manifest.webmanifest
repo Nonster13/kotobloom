@@ -1,0 +1,9 @@
+{
+  "name": "HayaLearn Japanese Video Lab",
+  "short_name": "HayaLearn",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d1017",
+  "theme_color": "#10131b",
+  "description": "Learn Japanese through videos."
+}
