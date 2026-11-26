@@ -6,12 +6,17 @@
 <meta name="theme-color" content="#10131b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>HayaLearn</title>
+<title>Kotobloom</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><div class="logo">hayai<span>learn</span></div><div class="tag">JAPANESE VIDEO LAB</div></header>
+
+<header>
+  <div class="logo">koto<span>bloom</span></div>
+  <div class="tag">JAPANESE VIDEO LAB</div>
+</header>
+
 <main>
   <section class="intro">
     <div class="eyebrow">NIHONGO FORGE · LISTENING MODE</div>
@@ -20,30 +25,56 @@
   </section>
 
   <section class="card">
-    <label class="section-label" for="ytUrl">01 / PASTE A YOUTUBE LINK</label>
+    <label class="section-label" for="ytUrl">01 / YOUTUBE VIDEO</label>
     <div class="url-row">
       <input id="ytUrl" type="url" placeholder="https://youtu.be/..." autocomplete="url">
       <button id="loadVideo">load</button>
     </div>
     <div id="videoWrap" class="video-wrap">
-      <div class="placeholder">your video will appear here</div>
+      <div id="playerPlaceholder" class="placeholder">
+        your video will appear here
+      </div>
+      <div id="player"></div>
     </div>
-    <p class="small">works with public YouTube videos that allow embedding.</p>
+    <p class="small">public videos that allow embedding are supported.</p>
   </section>
 
   <section class="card">
-    <div class="section-head"><span class="section-label">02 / JAPANESE SUBTITLES</span><span id="status">WAITING</span></div>
-    <div class="notice">automatic subtitles need a connected transcription service. this prototype can demonstrate the word-tapping experience, but it cannot extract audio or captions from a YouTube link by itself.</div>
-    <button id="demoBtn" class="secondary">try the interactive demo</button>
-    <div id="captions" class="captions"><div class="empty">your subtitles will show up here.</div></div>
+    <div class="section-head">
+      <span class="section-label">02 / JAPANESE SUBTITLES</span>
+      <span id="status">WAITING</span>
+    </div>
+
+    <div class="subtitle-tools">
+      <label class="upload-button" for="vttFile">load subtitle file (.vtt)</label>
+      <input id="vttFile" type="file" accept=".vtt,text/vtt">
+      <button id="demoBtn" class="secondary">try demo</button>
+    </div>
+
+    <div id="captions" class="captions">
+      <div class="empty">load a video and its timestamped subtitles.</div>
+    </div>
+
+    <p class="small">
+      subtitles follow the video's playback time. upload a Japanese WebVTT
+      subtitle file for your video.
+    </p>
   </section>
 
-  <section class="card dictionary">
-    <div class="section-head"><span class="section-label">03 / WORD LAB</span><span>tap any word</span></div>
-    <div id="wordInfo" class="empty">choose a word from the subtitles.</div>
-  </section>
-  <footer>HayaLearn · built for learning Japanese through videos</footer>
+  <footer>Kotobloom · learn Japanese through videos</footer>
 </main>
+
+<div id="dictionaryPopup" class="dictionary-popup" hidden>
+  <button id="closeDictionary" class="popup-close" aria-label="Close">×</button>
+  <div id="popupWord" class="word"></div>
+  <div id="popupReading" class="reading"></div>
+  <div id="popupMeaning" class="meaning"></div>
+  <a id="popupLink" class="dict-link" target="_blank" rel="noopener">
+    OPEN FULL DICTIONARY ↗
+  </a>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="app.js"></script>
 </body>
 </html>
