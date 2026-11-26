@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,12 +31,14 @@
       <input id="ytUrl" type="url" placeholder="https://youtu.be/..." autocomplete="url">
       <button id="loadVideo">load</button>
     </div>
+
     <div id="videoWrap" class="video-wrap">
       <div id="playerPlaceholder" class="placeholder">
         your video will appear here
       </div>
       <div id="player"></div>
     </div>
+
     <p class="small">public videos that allow embedding are supported.</p>
   </section>
 
@@ -51,13 +54,40 @@
       <button id="demoBtn" class="secondary">try demo</button>
     </div>
 
+    <div class="ai-transcription">
+      <div class="section-label">03 / AI TRANSCRIPTION</div>
+
+      <p class="small">
+        turn Japanese speech into synchronized subtitles using free,
+        on-device AI.
+      </p>
+
+      <label class="upload-button" for="mediaFile">
+        choose audio / video
+      </label>
+
+      <input
+        id="mediaFile"
+        type="file"
+        accept="audio/*,video/*"
+      >
+
+      <button id="transcribeBtn" class="secondary" disabled>
+        transcribe with ai
+      </button>
+
+      <p id="transcribeProgress" class="small">
+        choose an audio or video file to get started.
+      </p>
+    </div>
+
     <div id="captions" class="captions">
       <div class="empty">load a video and its timestamped subtitles.</div>
     </div>
 
     <p class="small">
       subtitles follow the video's playback time. upload a Japanese WebVTT
-      subtitle file for your video.
+      subtitle file or generate subtitles with AI.
     </p>
   </section>
 
