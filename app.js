@@ -32,7 +32,10 @@ function videoId(raw) {
 
     if (u.hostname.includes('youtu.be')) {
       id = u.pathname.split('/').filter(Boolean)[0];
-    } else if (u.hostname.includes('youtube.com')) {
+    } else if (
+      u.hostname === 'youtube.com' ||
+      u.hostname.endsWith('.youtube.com')
+    ) {
       id = u.searchParams.get('v') ||
         u.pathname.split('/').filter(Boolean).pop();
     }
@@ -64,7 +67,10 @@ document.querySelector('#loadVideo').addEventListener('click', () => {
     return;
   }
 
-  if (syncTimer) clearInterval(syncTimer);
+  if (syncTimer) {
+    clearInterval(syncTimer);
+    syncTimer = null;
+  }
 
   closePopup();
 
@@ -91,18 +97,51 @@ document.querySelector('#loadVideo').addEventListener('click', () => {
     width: '100%',
     height: '100%',
     videoId: id,
+
     playerVars: {
       playsinline: 1,
       rel: 0,
-      enablejsapi: 1
+      enablejsapi: 1,
+
+      // Request Japanese captions automatically.
+      cc_load_policy: 1,
+      cc_lang_pref: 'ja'
     },
+
     events: {
-      onReady: () => {
-        setStatus('VIDEO READY');
+      onReady: event => {
+        setStatus('VIDEO READY · JAPANESE CAPTIONS REQUESTED');
+
+        // Try to select Japanese captions if available.
+        try {
+          const tracks = event.target.getOption(
+            'captions',
+            'tracklist'
+          );
+
+          if (Array.isArray(tracks)) {
+            const japaneseTrack = tracks.find(track =>
+              track.languageCode === 'ja'
+            );
+
+            if (japaneseTrack) {
+              event.target.setOption(
+                'captions',
+                'track',
+                japaneseTrack
+              );
+            }
+          }
+        } catch (error) {
+          console.log('Caption track selection unavailable.');
+        }
+
         syncTimer = setInterval(updateSubtitles, 100);
         updateSubtitles();
       },
+
       onStateChange: updateSubtitles,
+
       onError: () => setStatus('VIDEO ERROR')
     }
   });
@@ -225,6 +264,7 @@ window.addEventListener('kotobloom:transcription-ready', event => {
     updateSubtitles();
   } else {
     renderCue(cues[0]);
+
     captions.insertAdjacentHTML(
       'beforeend',
       '<p class="small">load the matching YouTube video to synchronize these subtitles.</p>'
@@ -275,7 +315,9 @@ function renderCue(cue) {
   currentTokens = [];
 
   const segments = typeof Intl.Segmenter === 'function'
-    ? [...new Intl.Segmenter('ja', {granularity: 'word'}).segment(cue.text)]
+    ? [...new Intl.Segmenter('ja', {
+        granularity: 'word'
+      }).segment(cue.text)]
     : [...cue.text].map(segment => ({segment}));
 
   segments.forEach(part => {
@@ -347,10 +389,8 @@ function positionPopup(element) {
     )
   );
 
-  // Prefer above the selected word.
   let top = rect.top - height - 10;
 
-  // If there isn't enough room, position below it.
   if (top < 8) {
     top = Math.min(
       rect.bottom + 10,
@@ -398,3 +438,4 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
+
